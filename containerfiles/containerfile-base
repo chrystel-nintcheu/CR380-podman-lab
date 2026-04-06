@@ -1,0 +1,43 @@
+# =============================================================================
+# CR380 - Containerfile de base / Base Containerfile
+# =============================================================================
+#
+# FR: Une image Nginx personnalisée avec une page d'accueil simple.
+#     Utilisé dans le Lab 05 — Containerfile & Construction d'images.
+#
+# EN: A custom Nginx image with a simple welcome page.
+#     Used in Lab 05 — Containerfile & Image Build.
+#
+# Construction / Build:
+#   podman build -t monimage:base -f containerfiles/containerfile-base .
+#
+# Exécution / Run:
+#   podman run -d --name appCT -p 8090:80 monimage:base
+# =============================================================================
+
+# FR: L'image de base — Nginx Alpine est petite (~8 Mo)
+# EN: Base image — Nginx Alpine is small (~8 MB)
+FROM docker.io/nginx:alpine
+
+# FR: Métadonnées de l'image
+# EN: Image metadata
+LABEL maintainer="CR380 Podman Lab"
+LABEL description="Image de démonstration CR380 / CR380 demo image"
+LABEL version="1.0"
+
+# FR: Variables d'environnement
+# EN: Environment variables
+ENV APP_ENV=production
+ENV APP_NAME="CR380 Podman Lab"
+
+# FR: Copier notre page d'accueil personnalisée
+# EN: Copy our custom welcome page
+COPY containerfiles/index.html /usr/share/nginx/html/index.html
+
+# FR: Exposer le port 80 (documentation uniquement, pas de mapping réel)
+# EN: Expose port 80 (documentation only, not actual port mapping)
+EXPOSE 80
+
+# FR: Commande de démarrage (héritée de l'image de base Nginx)
+# EN: Start command (inherited from Nginx base image)
+CMD ["nginx", "-g", "daemon off;"]
