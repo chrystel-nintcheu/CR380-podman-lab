@@ -1,0 +1,28 @@
+name: nginx-basic
+
+# =============================================================================
+# CR380 - Podman Compose — nginx-basic.yaml
+# =============================================================================
+#
+# FR: Un service Nginx simple pour le Lab 08 — Podman Compose.
+#     La clé 'name:' définit le nom du projet Compose, ce qui évite les
+#     conflits de noms entre les labs.
+#
+# EN: A simple Nginx service for Lab 08 — Podman Compose.
+#     The 'name:' key sets the Compose project name, avoiding naming
+#     conflicts between labs.
+#
+# Utilisation / Usage:
+#   podman-compose -f compose-files/nginx-basic.yaml up -d
+#   podman-compose -f compose-files/nginx-basic.yaml ps
+#   podman-compose -f compose-files/nginx-basic.yaml logs
+#   podman-compose -f compose-files/nginx-basic.yaml down
+# =============================================================================
+
+services:
+  web:
+    image: docker.io/nginx:alpine
+    container_name: cr380-podman-nginx
+    ports:
+      - "8081:80"
+    restart: unless-stopped

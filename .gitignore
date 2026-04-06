@@ -1,0 +1,23 @@
+# =============================================================================
+# CR380 - Podman Lab — .gitignore
+# =============================================================================
+
+# Auto-generated test results
+results/report-*.json
+
+# Auto-generated logs
+logs/test-*.log
+
+# macOS
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Temp files
+*.tmp
+*.bak

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CR380 — Podman Lab</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 { color: #8b2be2; }
+        .badge {
+            display: inline-block;
+            background: #8b2be2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <span class="badge">CR380</span>
+        <h1>🦭 Podman Lab</h1>
+        <p>Bienvenue dans votre conteneur Podman personnalisé !</p>
+        <p>Welcome to your custom Podman container!</p>
+        <hr>
+        <p><strong>Image:</strong> <code>monimage:base</code></p>
+        <p><strong>Base:</strong> <code>nginx:alpine</code></p>
+        <p><strong>Lab:</strong> CR380 — Introduction aux conteneurs avec Podman</p>
+        <hr>
+        <p>Ce fichier a été copié dans le conteneur via l'instruction <code>COPY</code> du Containerfile.</p>
+        <p>This file was copied into the container via the <code>COPY</code> instruction in the Containerfile.</p>
+    </div>
+</body>
+</html>
