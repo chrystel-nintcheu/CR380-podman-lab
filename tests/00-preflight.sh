@@ -4,12 +4,15 @@
 # =============================================================================
 #
 # FR: Vérifier que l'environnement est prêt pour les labs Podman.
-#     Couvre: OS, réseau, espace disque, outils requis.
+#     Couvre: OS, réseau, espace disque, outils requis, subuid/subgid.
 #
 # EN: Verify the environment is ready for the Podman labs.
-#     Covers: OS, network, disk space, required tools.
+#     Covers: OS, network, disk space, required tools, subuid/subgid.
 #
 # Depends on: (none)
+#
+# 📖 Official doc: https://docs.podman.io/en/latest/markdown/podman.1.html
+# 📖 Rootless setup: https://docs.podman.io/en/latest/markdown/podman.1.html#rootless-mode
 # =============================================================================
 
 run_test() {
@@ -18,6 +21,8 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 1: Check OS
     # FR: Vérifier la version du système d'exploitation
+    # 📖 Podman supports: https://podman.io/docs/installation#linux-distributions
+    # ⚠  Pitfall: Podman version differs across Ubuntu releases (22.04 vs 24.04)
     # -------------------------------------------------------------------------
     learn_pause \
         "Nous vérifions d'abord que le système d'exploitation est Ubuntu.\nCommande: lsb_release -d" \
@@ -40,6 +45,8 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 2: Check internet connectivity
     # FR: Vérifier la connexion Internet
+    # 📖 Podman registries: https://docs.podman.io/en/latest/markdown/podman.1.html#registries
+    # ⚠  Pitfall: Corporate firewalls may block quay.io or docker.io
     # -------------------------------------------------------------------------
     learn_pause \
         "Vérification de la connexion Internet vers quay.io (registre Podman).\nCommande: curl -s --max-time 10 https://quay.io" \
@@ -60,6 +67,8 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 3: Check disk space
     # FR: Vérifier l'espace disque disponible
+    # 📖 Podman stores images in ~/.local/share/containers (rootless)
+    # ⚠  Pitfall: df / may not reflect the partition where containers are stored
     # -------------------------------------------------------------------------
     learn_pause \
         "Vérification de l'espace disque disponible (minimum ${MIN_DISK_GB} Go).\nCommande: df -BG /" \
@@ -80,6 +89,7 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 4: Check required tools
     # FR: Vérifier que les outils requis sont installés
+    # ⚠  Pitfall: jq may not be installed by default on minimal Ubuntu
     # -------------------------------------------------------------------------
     learn_pause \
         "Vérification des outils requis: curl, jq, git." \
@@ -98,7 +108,39 @@ run_test() {
     done
 
     # -------------------------------------------------------------------------
-    # Step 5: Check Podman is not yet installed (lab 01 will install it)
+    # Step 5: Check subuid/subgid for rootless Podman
+    # FR: Vérifier la configuration des plages UID/GID pour le mode rootless
+    # 📖 Rootless requires subordinate UIDs/GIDs:
+    #    https://docs.podman.io/en/latest/markdown/podman.1.html#rootless-mode
+    # ⚠  Pitfall: Missing subuid/subgid causes "cannot set up namespace" errors
+    # -------------------------------------------------------------------------
+    learn_pause \
+        "Le mode rootless de Podman nécessite des plages d'UIDs/GIDs\nsubordonnés dans /etc/subuid et /etc/subgid.\nSans cela, Podman ne peut pas créer les namespaces utilisateur." \
+        "Podman's rootless mode requires subordinate UID/GID ranges\nin /etc/subuid and /etc/subgid.\nWithout this, Podman cannot create user namespaces."
+
+    local current_user
+    current_user=$(whoami)
+
+    if grep -q "^${current_user}:" /etc/subuid 2>/dev/null; then
+        pass "subuid configured for ${current_user} / subuid configuré"
+    else
+        fail "subuid not configured for ${current_user}" \
+             "${current_user} entry in /etc/subuid" \
+             "not found" \
+             "Exécutez: sudo usermod --add-subuids 100000-165535 ${current_user}"
+    fi
+
+    if grep -q "^${current_user}:" /etc/subgid 2>/dev/null; then
+        pass "subgid configured for ${current_user} / subgid configuré"
+    else
+        fail "subgid not configured for ${current_user}" \
+             "${current_user} entry in /etc/subgid" \
+             "not found" \
+             "Exécutez: sudo usermod --add-subgids 100000-165535 ${current_user}"
+    fi
+
+    # -------------------------------------------------------------------------
+    # Step 6: Check Podman is not yet installed (lab 01 will install it)
     # FR: Vérifier que Podman n'est pas déjà installé (lab 01 va l'installer)
     # -------------------------------------------------------------------------
     learn_pause \
