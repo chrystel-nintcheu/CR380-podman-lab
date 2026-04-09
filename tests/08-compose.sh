@@ -14,6 +14,10 @@
 #     Covers: podman-compose installation, lifecycle (up/down/ps/logs).
 #
 # Depends on: 07
+#
+# 📖 podman-compose: https://github.com/containers/podman-compose
+# 📖 Compose Spec: https://compose-spec.io/
+# 📖 podman-run(1): https://docs.podman.io/en/latest/markdown/podman-run.1.html
 # =============================================================================
 
 run_test() {
@@ -25,6 +29,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 1: Check podman-compose is installed
     # FR: Vérifier que podman-compose est installé
+    # 📖 https://github.com/containers/podman-compose#installation
+    # ⚠  Pitfall: podman-compose is a separate project from Podman itself;
+    #    `docker compose` (v2) is built-in, but podman-compose must be
+    #    installed separately via apt or pip3
     # -------------------------------------------------------------------------
     learn_pause \
         "Podman Compose utilise le même format YAML que Docker Compose.\nLa commande est 'podman-compose' (avec tiret).\n\nSi non installé:\n  sudo apt-get install -y podman-compose\n  # ou\n  pip3 install podman-compose\n\nCommande: podman-compose --version" \
@@ -74,6 +82,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 3: Start the compose stack
     # FR: Démarrer la pile Compose
+    # 📖 https://github.com/containers/podman-compose#usage
+    #    podman-compose up -d: start services in detached mode
+    # ⚠  Pitfall: The 'name:' key in the YAML sets the project name;
+    #    without it, the directory name is used, which may cause conflicts
     # -------------------------------------------------------------------------
     learn_pause \
         "Démarrons la pile avec 'podman-compose up -d'.\n  -d : mode détaché (background)\n\nCommande: podman-compose -f ${COMPOSE_NGINX_BASIC} up -d" \
@@ -136,6 +148,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 7: Stop and remove
     # FR: Arrêter et supprimer
+    # 📖 https://github.com/containers/podman-compose#usage
+    #    podman-compose down: stops and removes containers and networks
+    # ⚠  Pitfall: 'down' does NOT remove named volumes unless you add
+    #    --volumes flag; data persists otherwise
     # -------------------------------------------------------------------------
     learn_pause \
         "'podman-compose down' arrête et supprime les conteneurs et réseaux.\nLes volumes nommés sont conservés (sauf avec --volumes).\n\nCommande: podman-compose -f ${COMPOSE_NGINX_BASIC} down" \

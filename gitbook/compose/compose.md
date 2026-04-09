@@ -9,6 +9,23 @@ description: >-
 {% tabs %}
 {% tab title="Français" %}
 
+## Avant de commencer
+
+**Prérequis** : Lab 07 doit être validé (pods).
+
+**Glossaire**
+| Terme | Définition |
+|-------|------------|
+| Compose Spec | Standard ouvert définissant le format YAML multi-conteneurs |
+| Service | Un conteneur défini dans le fichier Compose |
+| Projet (project) | Ensemble de services regroupés (clé `name:` dans le YAML) |
+| depends_on | Déclaration d'ordre de démarrage entre services |
+| restart policy | Politique de redémarrage automatique (unless-stopped, always) |
+
+📖 **Documentation officielle** :
+- [podman-compose](https://github.com/containers/podman-compose)
+- [Compose Spec](https://compose-spec.io/)
+
 ## Objectif
 
 Apprendre à utiliser `podman-compose` pour gérer des applications multi-conteneurs.
@@ -105,8 +122,35 @@ volumes:
 ./run-labs.sh --learn --lab 08
 ```
 
+## Dépannage
+
+| Symptôme | Cause | Solution |
+|----------|-------|----------|
+| `podman-compose: command not found` | Non installé ou pas dans PATH | `pip3 install podman-compose` puis `export PATH="$HOME/.local/bin:$PATH"` |
+| `Error: name already in use` | Conteneur d'une exécution précédente | `podman-compose -f <fichier> down` puis relancer |
+| Port 8081 déjà utilisé | Autre service sur le même port | `ss -tlnp \| grep 8081` puis arrêter le service |
+| `Error: pull access denied` | Image introuvable ou registre bloqué | Vérifiez le nom complet de l'image dans le YAML (préfixe docker.io/) |
+| `podman-compose down` ne supprime pas les volumes | Comportement normal | Ajoutez `--volumes` pour supprimer les volumes nommés |
+
 {% endtab %}
 {% tab title="English" %}
+
+## Before You Start
+
+**Prerequisites**: Lab 07 must pass (pods).
+
+**Glossary**
+| Term | Definition |
+|------|------------|
+| Compose Spec | Open standard defining the multi-container YAML format |
+| Service | A container defined in the Compose file |
+| Project | Group of services (set by `name:` key in YAML) |
+| depends_on | Startup order declaration between services |
+| restart policy | Auto-restart policy (unless-stopped, always) |
+
+📖 **Official docs**:
+- [podman-compose](https://github.com/containers/podman-compose)
+- [Compose Spec](https://compose-spec.io/)
 
 ## Objective
 
@@ -203,6 +247,16 @@ volumes:
 ```bash
 ./run-labs.sh --learn --lab 08
 ```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `podman-compose: command not found` | Not installed or not in PATH | `pip3 install podman-compose` then `export PATH="$HOME/.local/bin:$PATH"` |
+| `Error: name already in use` | Container from previous run | `podman-compose -f <file> down` then restart |
+| Port 8081 already in use | Another service on same port | `ss -tlnp \| grep 8081` then stop that service |
+| `Error: pull access denied` | Image not found or registry blocked | Check full image name in YAML (add docker.io/ prefix) |
+| `podman-compose down` doesn't remove volumes | Normal behavior | Add `--volumes` to also remove named volumes |
 
 {% endtab %}
 {% endtabs %}
