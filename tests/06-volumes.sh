@@ -14,6 +14,12 @@
 #     Covers: podman volume create, podman run -v, bind mount, podman volume ls.
 #
 # Depends on: 05
+#
+# 📖 podman-volume-create(1): https://docs.podman.io/en/latest/markdown/podman-volume-create.1.html
+# 📖 podman-volume-inspect(1): https://docs.podman.io/en/latest/markdown/podman-volume-inspect.1.html
+# 📖 podman-volume-ls(1): https://docs.podman.io/en/latest/markdown/podman-volume-ls.1.html
+# 📖 podman-volume-rm(1): https://docs.podman.io/en/latest/markdown/podman-volume-rm.1.html
+# 📖 podman-run -v: https://docs.podman.io/en/latest/markdown/podman-run.1.html#volume
 # =============================================================================
 
 run_test() {
@@ -29,6 +35,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 1: Create a named volume
     # FR: Créer un volume nommé
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-volume-create.1.html
+    # ⚠  Pitfall: Rootless volumes are stored in ~/.local/share/containers/
+    #    storage/volumes/ — not in /var/lib like rootful Podman
     # -------------------------------------------------------------------------
     learn_pause \
         "Créons un volume nommé avec 'podman volume create'.\nLes volumes nommés sont gérés par Podman et persistent indépendamment\ndes conteneurs.\n\nCommande: podman volume create ${VOL_NAME}" \
@@ -72,6 +81,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 4: Write data to volume via a container
     # FR: Écrire des données dans le volume via un conteneur
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-run.1.html#volume
+    #    -v syntax: <source>:<destination>[:<options>]
+    # ⚠  Pitfall: Forgetting --rm creates stopped containers that pile up
     # -------------------------------------------------------------------------
     learn_pause \
         "Écrivons des données dans le volume via un conteneur.\nLe dossier ${VOL_MOUNT} dans le conteneur est monté sur notre volume.\n\nCommande: podman run --rm -v ${VOL_NAME}:${VOL_MOUNT} ${IMAGE_ALPINE} \\\n    sh -c 'echo \"Hello Podman Volume\" > ${VOL_MOUNT}/test.txt'" \
@@ -101,6 +113,11 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 6: Bind mount — mount a host directory
     # FR: Bind mount — monter un répertoire de l'hôte
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-run.1.html#volume
+    #    Options: ro (read-only), rw (default), z/Z (SELinux relabel)
+    # ⚠  Pitfall: On SELinux-enabled hosts, bind mounts may fail without
+    #    :z (shared) or :Z (private) suffix. Ubuntu uses AppArmor by
+    #    default, so this is mainly relevant for RHEL/Fedora.
     # -------------------------------------------------------------------------
     learn_pause \
         "Un 'bind mount' monte un dossier de l'hôte directement dans le conteneur.\nC'est utile pour le développement (code source, configuration).\n\nCommande: podman run --rm -v /tmp:/mnt/host:ro ${IMAGE_ALPINE} ls /mnt/host" \

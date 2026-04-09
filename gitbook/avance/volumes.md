@@ -9,6 +9,23 @@ description: >-
 {% tabs %}
 {% tab title="Français" %}
 
+## Avant de commencer
+
+**Prérequis** : Lab 05 doit être validé (construction d'images).
+
+**Glossaire**
+| Terme | Définition |
+|-------|------------|
+| Volume nommé | Espace de stockage géré par Podman, indépendant des conteneurs |
+| Bind mount | Montage direct d'un dossier de l'hôte dans le conteneur |
+| tmpfs | Volume en mémoire (RAM), perdu au redémarrage |
+| Mountpoint | Chemin réel sur l'hôte où le volume est stocké |
+| SELinux z/Z | Options de relabeling pour SELinux (RHEL/Fedora) |
+
+📖 **Documentation officielle** :
+- [podman-volume-create(1)](https://docs.podman.io/en/latest/markdown/podman-volume-create.1.html)
+- [podman-run -v](https://docs.podman.io/en/latest/markdown/podman-run.1.html#volume)
+
 ## Objectif
 
 Apprendre à persister les données au-delà du cycle de vie des conteneurs avec les volumes Podman.
@@ -101,8 +118,35 @@ podman volume rm podman_data
 ./run-labs.sh --learn --lab 06
 ```
 
+## Dépannage
+
+| Symptôme | Cause | Solution |
+|----------|-------|----------|
+| `Error: volume already exists` | Volume du même nom existant | `podman volume rm podman_data` puis recréer |
+| `Permission denied` dans le conteneur | Problème de permissions UID | Ajoutez `:Z` au montage ou utilisez `--userns=keep-id` |
+| Données perdues après `podman rm` | Données dans le conteneur, pas le volume | Assurez-vous que `-v volume:/path` est bien spécifié |
+| Bind mount vide dans le conteneur | Chemin hôte inexistant | Vérifiez que le chemin source existe avec `ls -la` |
+| `Error: volume in use` lors de rm | Volume utilisé par un conteneur | `podman rm -f <conteneur>` d'abord |
+
 {% endtab %}
 {% tab title="English" %}
+
+## Before You Start
+
+**Prerequisites**: Lab 05 must pass (image building).
+
+**Glossary**
+| Term | Definition |
+|------|------------|
+| Named volume | Storage space managed by Podman, independent from containers |
+| Bind mount | Direct mounting of a host folder into the container |
+| tmpfs | In-memory volume (RAM), lost on restart |
+| Mountpoint | Actual path on host where volume is stored |
+| SELinux z/Z | Relabeling options for SELinux (RHEL/Fedora) |
+
+📖 **Official docs**:
+- [podman-volume-create(1)](https://docs.podman.io/en/latest/markdown/podman-volume-create.1.html)
+- [podman-run -v](https://docs.podman.io/en/latest/markdown/podman-run.1.html#volume)
 
 ## Objective
 
@@ -195,6 +239,16 @@ podman volume rm podman_data
 ```bash
 ./run-labs.sh --learn --lab 06
 ```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `Error: volume already exists` | Volume with same name exists | `podman volume rm podman_data` then recreate |
+| `Permission denied` inside container | UID permissions issue | Add `:Z` to mount or use `--userns=keep-id` |
+| Data lost after `podman rm` | Data was in container, not volume | Ensure `-v volume:/path` is specified |
+| Bind mount empty in container | Host path doesn't exist | Check source path exists with `ls -la` |
+| `Error: volume in use` on rm | Volume used by a container | `podman rm -f <container>` first |
 
 {% endtab %}
 {% endtabs %}
