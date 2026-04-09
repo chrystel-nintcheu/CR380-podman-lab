@@ -14,6 +14,13 @@
 #     podman image history.
 #
 # Depends on: 03
+#
+# 📖 podman-search(1): https://docs.podman.io/en/latest/markdown/podman-search.1.html
+# 📖 podman-pull(1): https://docs.podman.io/en/latest/markdown/podman-pull.1.html
+# 📖 podman-images(1): https://docs.podman.io/en/latest/markdown/podman-images.1.html
+# 📖 podman-image-inspect(1): https://docs.podman.io/en/latest/markdown/podman-image-inspect.1.html
+# 📖 podman-image-history(1): https://docs.podman.io/en/latest/markdown/podman-image-history.1.html
+# 📖 podman-rmi(1): https://docs.podman.io/en/latest/markdown/podman-rmi.1.html
 # =============================================================================
 
 run_test() {
@@ -25,6 +32,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 1: Search for images
     # FR: Chercher des images dans les registres
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-search.1.html
+    # ⚠  Pitfall: podman search queries configured registries — results
+    #    differ from Docker because Podman requires the registry prefix
     # -------------------------------------------------------------------------
     learn_pause \
         "Podman peut chercher des images dans plusieurs registres.\nLa commande 'podman search' interroge les registres configurés.\n\nCommande: podman search nginx --limit 5" \
@@ -39,6 +49,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 2: Pull an image from Quay.io
     # FR: Télécharger une image depuis Quay.io
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-pull.1.html
+    # ⚠  Pitfall: Unlike Docker, Podman requires the full registry prefix
+    #    (docker.io/alpine not just alpine) unless registries.conf is configured
     # -------------------------------------------------------------------------
     learn_pause \
         "Téléchargeons l'image Alpine depuis Docker Hub.\nPodman supporte le préfixe de registre: docker.io/library/alpine\n\nCommande: podman pull ${IMAGE_ALPINE}" \
@@ -72,6 +85,8 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 4: Inspect an image
     # FR: Inspecter une image
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-image-inspect.1.html
+    # ⚠  Pitfall: --format uses Go template syntax; use {{.Os}} not .os
     # -------------------------------------------------------------------------
     learn_pause \
         "'podman inspect' affiche les métadonnées complètes d'une image.\nOn peut extraire un champ avec --format.\n\nCommande: podman image inspect ${IMAGE_ALPINE} --format '{{.Os}}/{{.Architecture}}'" \
@@ -85,6 +100,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 5: Image history
     # FR: Historique des couches d'une image
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-image-history.1.html
+    # ⚠  Pitfall: Some layers show <missing> for intermediate layers —
+    #    this is normal for images built with BuildKit
     # -------------------------------------------------------------------------
     learn_pause \
         "Chaque image est composée de couches (layers) superposées.\n'podman image history' affiche ces couches et leurs tailles.\n\nCommande: podman image history ${IMAGE_ALPINE}" \
@@ -122,6 +140,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 7: Remove an image
     # FR: Supprimer une image
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-rmi.1.html
+    # ⚠  Pitfall: Cannot remove an image used by a running container;
+    #    use --force to override, but this may break running containers
     # -------------------------------------------------------------------------
     learn_pause \
         "Supprimons une image locale avec 'podman rmi'.\nOn ne peut pas supprimer une image utilisée par un conteneur actif.\n\nCommande: podman rmi ${IMAGE_NGINX_ALPINE}" \
