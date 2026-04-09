@@ -16,6 +16,11 @@
 #     podman pod stop, podman pod rm.
 #
 # Depends on: 06
+#
+# 📖 podman-pod-create(1): https://docs.podman.io/en/latest/markdown/podman-pod-create.1.html
+# 📖 podman-pod-ps(1): https://docs.podman.io/en/latest/markdown/podman-pod-ps.1.html
+# 📖 podman-pod-rm(1): https://docs.podman.io/en/latest/markdown/podman-pod-rm.1.html
+# 📖 podman-generate-kube(1): https://docs.podman.io/en/latest/markdown/podman-generate-kube.1.html
 # =============================================================================
 
 run_test() {
@@ -40,6 +45,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 2: Create a pod
     # FR: Créer un pod
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-pod-create.1.html
+    # ⚠  Pitfall: Port mapping (-p) must be on the pod, NOT on individual
+    #    containers. Adding -p to 'podman run --pod' will fail.
     # -------------------------------------------------------------------------
     learn_pause \
         "Créons un pod nommé '${POD_NAME}' avec le port 8082 exposé.\nCommande: podman pod create --name ${POD_NAME} -p 8082:80" \
@@ -55,6 +63,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 3: Add containers to the pod
     # FR: Ajouter des conteneurs dans le pod
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-run.1.html#pod
+    #    --pod <name> adds the container to an existing pod
+    # ⚠  Pitfall: Each pod automatically has an "infra" container — this is
+    #    normal and expected (it holds the shared namespaces)
     # -------------------------------------------------------------------------
     learn_pause \
         "Ajoutons un conteneur Nginx dans le pod.\nAvec '--pod ${POD_NAME}', le conteneur rejoint le pod.\nNote: le mapping de port est défini au niveau du pod, pas du conteneur.\n\nCommande: podman run -d --pod ${POD_NAME} --name ${CT_POD_NGINX} ${IMAGE_NGINX}" \
@@ -88,6 +100,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 5: Test communication inside the pod
     # FR: Tester la communication dans le pod
+    # 📖 Pod networking: containers share localhost (127.0.0.1)
+    #    https://docs.podman.io/en/latest/markdown/podman-pod-create.1.html
+    # ⚠  Pitfall: Alpine doesn't have curl by default; use wget or install
+    #    curl with apk. Also nginx may need a few seconds to start.
     # -------------------------------------------------------------------------
     learn_pause \
         "Dans un pod, tous les conteneurs partagent le même réseau.\nUn conteneur Alpine peut accéder au serveur Nginx via 'localhost'.\n\nAjoutons un conteneur Alpine dans le pod qui accède à Nginx." \
@@ -117,6 +133,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 6: Generate Kubernetes YAML from pod (bonus)
     # FR: Générer du YAML Kubernetes depuis le pod (bonus)
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-generate-kube.1.html
+    # ⚠  Pitfall: Command changed between versions: Podman 3.x uses
+    #    'podman generate kube', Podman 4.x+ prefers 'podman kube generate'
     # -------------------------------------------------------------------------
     learn_pause \
         "Bonus: Podman peut générer un fichier YAML Kubernetes depuis un pod !\nCela facilite la migration vers Kubernetes.\n\nCommande: podman generate kube ${POD_NAME}" \

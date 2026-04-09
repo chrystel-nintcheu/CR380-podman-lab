@@ -9,6 +9,24 @@ description: >-
 {% tabs %}
 {% tab title="Français" %}
 
+## Avant de commencer
+
+**Prérequis** : Lab 06 doit être validé (volumes et persistance).
+
+**Glossaire**
+| Terme | Définition |
+|-------|------------|
+| Pod | Groupe de conteneurs partageant le même namespace réseau |
+| Infra container | Conteneur invisible qui maintient les namespaces du pod |
+| Namespace réseau | Isolation réseau — les conteneurs du pod partagent localhost |
+| Namespace IPC | Isolation de la mémoire partagée entre processus |
+| `podman generate kube` | Génère du YAML Kubernetes depuis un pod local |
+
+📖 **Documentation officielle** :
+- [podman-pod-create(1)](https://docs.podman.io/en/latest/markdown/podman-pod-create.1.html)
+- [podman-pod-ps(1)](https://docs.podman.io/en/latest/markdown/podman-pod-ps.1.html)
+- [podman-generate-kube(1)](https://docs.podman.io/en/latest/markdown/podman-generate-kube.1.html)
+
 ## Objectif
 
 Comprendre et utiliser les Pods, une fonctionnalité de Podman absente de Docker.
@@ -96,8 +114,36 @@ podman pod rm -f mypod
 ./run-labs.sh --learn --lab 07
 ```
 
+## Dépannage
+
+| Symptôme | Cause | Solution |
+|----------|-------|----------|
+| `Error: pod already exists` | Pod du même nom existant | `podman pod rm -f mypod` puis recréer |
+| `Error: address already in use` sur le port | Port 8082 déjà pris | `ss -tlnp \| grep 8082` puis libérer |
+| `-p` sur `podman run --pod` échoue | Port mapping au mauvais niveau | Le port doit être sur `podman pod create -p`, pas sur `podman run` |
+| `wget: error getting response` | Nginx pas encore démarré | Attendre 2-3s ou `podman logs pod-nginx` |
+| `podman generate kube` retourne une erreur | Version Podman ancienne | Essayez `podman kube generate mypod` (syntaxe Podman 4.x+) |
+
 {% endtab %}
 {% tab title="English" %}
+
+## Before You Start
+
+**Prerequisites**: Lab 06 must pass (volumes and persistence).
+
+**Glossary**
+| Term | Definition |
+|------|------------|
+| Pod | Group of containers sharing the same network namespace |
+| Infra container | Invisible container that holds the pod's shared namespaces |
+| Network namespace | Network isolation — pod containers share localhost |
+| IPC namespace | Shared memory isolation between processes |
+| `podman generate kube` | Generates Kubernetes YAML from a local pod |
+
+📖 **Official docs**:
+- [podman-pod-create(1)](https://docs.podman.io/en/latest/markdown/podman-pod-create.1.html)
+- [podman-pod-ps(1)](https://docs.podman.io/en/latest/markdown/podman-pod-ps.1.html)
+- [podman-generate-kube(1)](https://docs.podman.io/en/latest/markdown/podman-generate-kube.1.html)
 
 ## Objective
 
@@ -185,6 +231,16 @@ podman pod rm -f mypod
 ```bash
 ./run-labs.sh --learn --lab 07
 ```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `Error: pod already exists` | Pod with same name exists | `podman pod rm -f mypod` then recreate |
+| `Error: address already in use` on port | Port 8082 already taken | `ss -tlnp \| grep 8082` then free it |
+| `-p` on `podman run --pod` fails | Port mapping at wrong level | Port must be on `podman pod create -p`, not `podman run` |
+| `wget: error getting response` | Nginx not started yet | Wait 2-3s or check `podman logs pod-nginx` |
+| `podman generate kube` returns error | Old Podman version | Try `podman kube generate mypod` (Podman 4.x+ syntax) |
 
 {% endtab %}
 {% endtabs %}
