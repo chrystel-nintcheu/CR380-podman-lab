@@ -44,10 +44,18 @@ sudo apt-get install -y podman-compose
 
 # Option 2: via pip3
 pip3 install podman-compose
+export PATH="$HOME/.local/bin:$PATH"
 
 # Vérification
 podman-compose --version
 ```
+
+{% hint style="warning" %}
+**pip3** installe les binaires dans `~/.local/bin`. Si `podman-compose` n'est pas trouvé, ajoutez dans votre `~/.bashrc` :
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+{% endhint %}
 
 ## Fichier Compose de base
 
@@ -170,10 +178,18 @@ sudo apt-get install -y podman-compose
 
 # Option 2: via pip3
 pip3 install podman-compose
+export PATH="$HOME/.local/bin:$PATH"
 
 # Verify
 podman-compose --version
 ```
+
+{% hint style="warning" %}
+**pip3** installs binaries to `~/.local/bin`. If `podman-compose` is not found, add to your `~/.bashrc`:
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+{% endhint %}
 
 ## Basic Compose file
 

@@ -53,7 +53,15 @@ sudo apt-get install -y podman-compose
 # Option 2: via pip3
 sudo apt-get install -y python3-pip
 pip3 install podman-compose
+export PATH="$HOME/.local/bin:$PATH"
 ```
+
+{% hint style="warning" %}
+**pip3** installe les binaires dans `~/.local/bin`, qui n'est pas toujours dans votre PATH. Si `podman-compose` n'est pas trouvé après l'installation, ajoutez cette ligne dans votre `~/.bashrc` :
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+{% endhint %}
 
 ### 4. Vérifier l'installation
 
@@ -133,7 +141,15 @@ sudo apt-get install -y podman-compose
 # Option 2: via pip3
 sudo apt-get install -y python3-pip
 pip3 install podman-compose
+export PATH="$HOME/.local/bin:$PATH"
 ```
+
+{% hint style="warning" %}
+**pip3** installs binaries to `~/.local/bin`, which may not be in your PATH. If `podman-compose` is not found after installation, add this line to your `~/.bashrc`:
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+{% endhint %}
 
 ### 4. Verify installation
 
