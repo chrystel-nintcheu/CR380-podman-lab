@@ -10,6 +10,12 @@
 #     This lab can be run at any time to reset the environment.
 #
 # Depends on: (none — can always run)
+#
+# 📖 podman-rm(1): https://docs.podman.io/en/latest/markdown/podman-rm.1.html
+# 📖 podman-rmi(1): https://docs.podman.io/en/latest/markdown/podman-rmi.1.html
+# 📖 podman-pod-rm(1): https://docs.podman.io/en/latest/markdown/podman-pod-rm.1.html
+# 📖 podman-volume-rm(1): https://docs.podman.io/en/latest/markdown/podman-volume-rm.1.html
+# 📖 podman-system-prune(1): https://docs.podman.io/en/latest/markdown/podman-system-prune.1.html
 # =============================================================================
 
 run_test() {
@@ -23,6 +29,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 1: Stop and remove all containers
     # FR: Arrêter et supprimer tous les conteneurs
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-rm.1.html
+    #    -f: force removal even if running
+    # ⚠  Pitfall: 'podman rm -f' sends SIGKILL which can corrupt data;
+    #    prefer 'podman stop' then 'podman rm' for data-sensitive containers
     # -------------------------------------------------------------------------
     learn_pause \
         "Supprimons tous les conteneurs de lab.\nCommande: podman rm -f <nom>" \
@@ -116,6 +126,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 5: Prune unused resources (optional)
     # FR: Nettoyer les ressources inutilisées (optionnel)
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-system-prune.1.html
+    #    -f: no confirmation, --all: also remove unused images (not just dangling)
+    # ⚠  Pitfall: Without --all, only dangling (untagged) images are removed;
+    #    pulled base images (nginx, alpine) will remain
     # -------------------------------------------------------------------------
     learn_pause \
         "'podman system prune' supprime les ressources non utilisées:\n  - Conteneurs arrêtés\n  - Images sans tag (dangling)\n  - Réseaux non utilisés\n\nCommande: podman system prune -f" \
