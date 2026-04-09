@@ -50,8 +50,10 @@ Podman supporte plusieurs registres de conteneurs:
 ### 1. Chercher une image
 
 ```bash
-podman search nginx --limit 5
+podman search docker.io/nginx --limit 5
 ```
+
+> ⚠️ Le préfixe de registre (`docker.io/`) est **obligatoire** pour `podman search`.
 
 ### 2. Télécharger une image
 
@@ -157,8 +159,10 @@ Podman supports multiple container registries:
 ### 1. Search for an image
 
 ```bash
-podman search nginx --limit 5
+podman search docker.io/nginx --limit 5
 ```
+
+> ⚠️ The registry prefix (`docker.io/`) is **required** for `podman search`.
 
 ### 2. Pull an image
 

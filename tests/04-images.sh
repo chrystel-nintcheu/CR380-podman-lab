@@ -37,14 +37,14 @@ run_test() {
     #    differ from Docker because Podman requires the registry prefix
     # -------------------------------------------------------------------------
     learn_pause \
-        "Podman peut chercher des images dans plusieurs registres.\nLa commande 'podman search' interroge les registres configurés.\n\nCommande: podman search nginx --limit 5" \
-        "Podman can search for images across multiple registries.\nThe 'podman search' command queries configured registries.\n\nCommand: podman search nginx --limit 5"
+        "Podman peut chercher des images dans plusieurs registres.\nLa commande 'podman search' interroge les registres configurés.\nAvec Podman, le préfixe de registre est requis (ex: docker.io/).\n\nCommande: podman search docker.io/nginx --limit 5" \
+        "Podman can search for images across multiple registries.\nThe 'podman search' command queries configured registries.\nWith Podman, the registry prefix is required (e.g., docker.io/).\n\nCommand: podman search docker.io/nginx --limit 5"
 
     assert_output_contains \
-        "podman search nginx returns results / podman search nginx retourne des résultats" \
+        "podman search docker.io/nginx returns results / podman search retourne des résultats" \
         "nginx" \
         "Vérifiez votre connexion Internet et les registres configurés" \
-        podman search nginx --limit 5
+        podman search docker.io/nginx --limit 5
 
     # -------------------------------------------------------------------------
     # Step 2: Pull an image from Quay.io
