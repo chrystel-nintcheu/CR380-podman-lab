@@ -12,6 +12,13 @@
 #     podman rm, podman ps, port mapping.
 #
 # Depends on: 02
+#
+# 📖 podman-run(1): https://docs.podman.io/en/latest/markdown/podman-run.1.html
+# 📖 podman-exec(1): https://docs.podman.io/en/latest/markdown/podman-exec.1.html
+# 📖 podman-ps(1): https://docs.podman.io/en/latest/markdown/podman-ps.1.html
+# 📖 podman-stop(1): https://docs.podman.io/en/latest/markdown/podman-stop.1.html
+# 📖 podman-rm(1): https://docs.podman.io/en/latest/markdown/podman-rm.1.html
+# 📖 podman-logs(1): https://docs.podman.io/en/latest/markdown/podman-logs.1.html
 # =============================================================================
 
 run_test() {
@@ -27,6 +34,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Part A: Conteneur Alpine interactif
     # FR: Lancer un conteneur Alpine en mode interactif
+    # 📖 podman-run flags: https://docs.podman.io/en/latest/markdown/podman-run.1.html
+    #    -d (detach), -i (interactive), -t (tty), --name
+    # ⚠  Pitfall: Forgetting -d makes the terminal hang waiting for input
     # -------------------------------------------------------------------------
     learn_pause \
         "Nous allons créer un conteneur Alpine en mode interactif.\nAlpine est une image minimaliste (<10 Mo) très utilisée.\n\nCommande: podman run -dit --name ${CT_ALPINE} ${IMAGE_ALPINE}\n\n  -d : détaché (en arrière-plan)\n  -i : interactif (garder STDIN ouvert)\n  -t : allouer un pseudo-terminal" \
@@ -57,6 +67,8 @@ run_test() {
     # -------------------------------------------------------------------------
     # podman exec: run a command inside the container
     # FR: Exécuter une commande dans le conteneur
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-exec.1.html
+    # ⚠  Pitfall: Container must be running for exec to work (not just created)
     # -------------------------------------------------------------------------
     learn_pause \
         "Exécutons une commande dans le conteneur avec 'podman exec'.\nCommande: podman exec ${CT_ALPINE} cat /etc/os-release" \
@@ -71,6 +83,8 @@ run_test() {
     # -------------------------------------------------------------------------
     # podman ps: list running containers
     # FR: Lister les conteneurs en cours d'exécution
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-ps.1.html
+    # ⚠  Pitfall: 'podman ps' only shows running; use 'podman ps -a' for all
     # -------------------------------------------------------------------------
     learn_pause \
         "'podman ps' liste les conteneurs en cours d'exécution.\nUtilisez 'podman ps -a' pour voir tous les conteneurs (y compris arrêtés).\n\nCommande: podman ps" \
@@ -85,6 +99,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # podman stop + podman rm
     # FR: Arrêter et supprimer le conteneur Alpine
+    # 📖 podman-stop: https://docs.podman.io/en/latest/markdown/podman-stop.1.html
+    # 📖 podman-rm: https://docs.podman.io/en/latest/markdown/podman-rm.1.html
+    # ⚠  Pitfall: 'podman rm' on a running container fails; use 'podman rm -f'
     # -------------------------------------------------------------------------
     learn_pause \
         "Arrêtons et supprimons le conteneur Alpine.\n  podman stop ${CT_ALPINE}\n  podman rm ${CT_ALPINE}\n\nDifférence avec Docker: Podman supporte aussi 'podman rm -f'\npour forcer la suppression sans arrêt préalable." \
@@ -105,6 +122,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Part B: Conteneur Nginx avec mapping de port
     # FR: Lancer un conteneur Nginx avec mapping de port
+    # 📖 Port mapping: https://docs.podman.io/en/latest/markdown/podman-run.1.html#publish
+    # ⚠  Pitfall: Port already in use gives "address already in use" error;
+    #    check with: ss -tlnp | grep <port>
     # -------------------------------------------------------------------------
     learn_pause \
         "Lançons un serveur web Nginx dans un conteneur avec mapping de port.\nCommande: podman run -d --name ${CT_NGINX} -p ${PORT_NGINX}:80 ${IMAGE_NGINX}\n\n  -p ${PORT_NGINX}:80 : mappe le port ${PORT_NGINX} de l'hôte au port 80 du conteneur\n\nNote: Podman rootless redirige les ports non-privilégiés (>1024).\nLes ports 80 et 443 nécessitent une configuration spéciale en rootless." \
@@ -112,6 +132,13 @@ run_test() {
 
     run_cmd "Pull Nginx image" "${TIMEOUT_PULL}" \
         podman pull "${IMAGE_NGINX}" || true
+
+    # Entry gate: check port is not already in use
+    if ss -tlnp 2>/dev/null | grep -q ":${PORT_NGINX} "; then
+        fail "Port ${PORT_NGINX} already in use / Port ${PORT_NGINX} déjà utilisé" \
+             "port ${PORT_NGINX} available" "port in use" \
+             "Vérifiez: ss -tlnp | grep ${PORT_NGINX} — libérez le port avant de continuer"
+    fi
 
     run_cmd "Create Nginx container" "${TIMEOUT_DEFAULT}" \
         podman run -d --name "${CT_NGINX}" -p "${PORT_NGINX}:80" "${IMAGE_NGINX}" || true

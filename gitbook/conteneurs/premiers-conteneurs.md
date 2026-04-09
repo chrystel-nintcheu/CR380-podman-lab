@@ -9,6 +9,26 @@ description: >-
 {% tabs %}
 {% tab title="Français" %}
 
+## Avant de commencer
+
+**Prérequis** : Lab 02 doit être validé (Podman configuré et fonctionnel).
+
+**Glossaire**
+| Terme | Définition |
+|-------|------------|
+| Conteneur | Instance en cours d'exécution d'une image |
+| Image | Modèle en lecture seule pour créer des conteneurs |
+| Détaché (-d) | Le conteneur tourne en arrière-plan |
+| Mapping de port | Redirection d'un port hôte vers un port conteneur |
+| STDIN | Entrée standard (nécessaire pour le mode interactif) |
+
+📖 **Documentation officielle** :
+- [podman-run(1)](https://docs.podman.io/en/latest/markdown/podman-run.1.html)
+- [podman-exec(1)](https://docs.podman.io/en/latest/markdown/podman-exec.1.html)
+- [podman-ps(1)](https://docs.podman.io/en/latest/markdown/podman-ps.1.html)
+- [podman-stop(1)](https://docs.podman.io/en/latest/markdown/podman-stop.1.html)
+- [podman-rm(1)](https://docs.podman.io/en/latest/markdown/podman-rm.1.html)
+
 ## Objectif
 
 Apprendre les commandes de base pour créer, gérer et supprimer des conteneurs Podman.
@@ -85,8 +105,38 @@ En mode rootless, Podman ne peut mapper que les ports ≥ 1024 par défaut. Pour
 ./run-labs.sh --learn --lab 03
 ```
 
+## Dépannage
+
+| Symptôme | Cause | Solution |
+|----------|-------|----------|
+| `Error: address already in use` | Port 8080 déjà utilisé | `ss -tlnp \| grep 8080` pour identifier, puis arrêter le service |
+| `Error: container name already in use` | Conteneur du même nom existe | `podman rm -f alpineCT` puis réessayer |
+| `curl: (7) Failed to connect` | Conteneur pas encore prêt | Attendez 2-3 secondes ou `podman logs nginxCT` |
+| Terminal bloqué après `podman run` | Oubli du flag `-d` (détaché) | Ctrl+C puis relancer avec `-d` |
+| `podman exec` retourne erreur | Conteneur arrêté | `podman start alpineCT` puis réessayer |
+
 {% endtab %}
 {% tab title="English" %}
+
+## Before You Start
+
+**Prerequisites**: Lab 02 must pass (Podman configured and functional).
+
+**Glossary**
+| Term | Definition |
+|------|------------|
+| Container | Running instance of an image |
+| Image | Read-only template to create containers |
+| Detached (-d) | Container runs in the background |
+| Port mapping | Forwarding a host port to a container port |
+| STDIN | Standard input (needed for interactive mode) |
+
+📖 **Official docs**:
+- [podman-run(1)](https://docs.podman.io/en/latest/markdown/podman-run.1.html)
+- [podman-exec(1)](https://docs.podman.io/en/latest/markdown/podman-exec.1.html)
+- [podman-ps(1)](https://docs.podman.io/en/latest/markdown/podman-ps.1.html)
+- [podman-stop(1)](https://docs.podman.io/en/latest/markdown/podman-stop.1.html)
+- [podman-rm(1)](https://docs.podman.io/en/latest/markdown/podman-rm.1.html)
 
 ## Objective
 
@@ -163,6 +213,16 @@ In rootless mode, Podman can only map ports ≥ 1024 by default. To use ports 80
 ```bash
 ./run-labs.sh --learn --lab 03
 ```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `Error: address already in use` | Port 8080 already taken | `ss -tlnp \| grep 8080` to identify, then stop that service |
+| `Error: container name already in use` | Container with same name exists | `podman rm -f alpineCT` then retry |
+| `curl: (7) Failed to connect` | Container not ready yet | Wait 2-3 seconds or check `podman logs nginxCT` |
+| Terminal hangs after `podman run` | Missing `-d` (detach) flag | Ctrl+C then rerun with `-d` |
+| `podman exec` returns error | Container is stopped | `podman start alpineCT` then retry |
 
 {% endtab %}
 {% endtabs %}
