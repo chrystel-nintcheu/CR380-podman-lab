@@ -14,6 +14,11 @@
 #     Covers: writing a Containerfile, podman build, podman run the image.
 #
 # Depends on: 04
+#
+# 📖 podman-build(1): https://docs.podman.io/en/latest/markdown/podman-build.1.html
+# 📖 Containerfile reference: https://docs.podman.io/en/latest/markdown/podman-build.1.html#containerfile
+# 📖 podman-image-inspect(1): https://docs.podman.io/en/latest/markdown/podman-image-inspect.1.html
+# 📖 podman-image-history(1): https://docs.podman.io/en/latest/markdown/podman-image-history.1.html
 # =============================================================================
 
 run_test() {
@@ -31,6 +36,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 1: Verify the Containerfile exists
     # FR: Vérifier que le Containerfile existe
+    # 📖 Containerfile vs Dockerfile: both are OCI-compatible. Podman
+    #    searches for 'Containerfile' first, then 'Dockerfile'.
+    #    https://docs.podman.io/en/latest/markdown/podman-build.1.html
+    # ⚠  Pitfall: Build context (.) must contain or reference the Containerfile
     # -------------------------------------------------------------------------
     learn_pause \
         "Un Containerfile (ou Dockerfile) décrit comment construire une image.\nIl contient des instructions comme FROM, RUN, COPY, EXPOSE, CMD.\n\nNous allons utiliser: ${cf}" \
@@ -54,6 +63,10 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 2: Build the image
     # FR: Construire l'image
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-build.1.html
+    #    -t: tag the image, -f: specify Containerfile path
+    # ⚠  Pitfall: Large build context slows builds; use .containerignore
+    #    to exclude unnecessary files (like .git, node_modules)
     # -------------------------------------------------------------------------
     learn_pause \
         "Construisons l'image avec 'podman build'.\n  -t  : tag de l'image (nom:version)\n  -f  : chemin vers le Containerfile\n  .   : contexte de construction (dossier courant)\n\nCommande: podman build -t ${IMG_BASE} -f ${cf} ${PROJECT_DIR}" \
@@ -104,6 +117,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 5: Run a container from the built image
     # FR: Lancer un conteneur depuis l'image construite
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-run.1.html
+    # ⚠  Pitfall: Port conflict if previous lab's container still runs on
+    #    same port; cleanup_container at top handles this
     # -------------------------------------------------------------------------
     learn_pause \
         "Lançons un conteneur depuis notre image personnalisée.\nCommande: podman run --rm --name ${CT_APP} -p ${PORT_APP}:80 ${IMG_BASE}" \

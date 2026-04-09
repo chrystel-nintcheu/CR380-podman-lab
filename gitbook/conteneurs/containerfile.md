@@ -9,6 +9,23 @@ description: >-
 {% tabs %}
 {% tab title="Français" %}
 
+## Avant de commencer
+
+**Prérequis** : Lab 04 doit être validé (gestion des images et registres).
+
+**Glossaire**
+| Terme | Définition |
+|-------|------------|
+| Containerfile | Fichier d'instructions pour construire une image (= Dockerfile) |
+| Contexte de build | Dossier envoyé au moteur de construction |
+| .containerignore | Fichier listant ce qu'il faut exclure du contexte |
+| Multi-stage build | Technique utilisant plusieurs FROM pour réduire la taille finale |
+| ENTRYPOINT vs CMD | ENTRYPOINT = commande fixe ; CMD = arguments par défaut |
+
+📖 **Documentation officielle** :
+- [podman-build(1)](https://docs.podman.io/en/latest/markdown/podman-build.1.html)
+- [Containerfile reference](https://docs.podman.io/en/latest/markdown/podman-build.1.html#containerfile)
+
 ## Objectif
 
 Créer une image Podman personnalisée à partir d'un **Containerfile** (équivalent du Dockerfile).
@@ -102,8 +119,35 @@ podman image history monimage:base
 ./run-labs.sh --learn --lab 05
 ```
 
+## Dépannage
+
+| Symptôme | Cause | Solution |
+|----------|-------|----------|
+| `Error: COPY failed: file not found` | Chemin relatif incorrect dans COPY | Vérifiez le chemin par rapport au contexte de build |
+| Build très lent | Contexte de build trop gros | Ajoutez un `.containerignore` (exclure .git, logs, etc.) |
+| `Error: image not known` après build | Tag mal spécifié | Vérifiez `-t monimage:base` (pas d'espace dans le tag) |
+| `Error: address already in use` | Port 8090 déjà pris | `ss -tlnp \| grep 8090` puis libérer le port |
+| L'image ne contient pas les changements | Cache de build utilisé | Ajoutez `--no-cache` à `podman build` |
+
 {% endtab %}
 {% tab title="English" %}
+
+## Before You Start
+
+**Prerequisites**: Lab 04 must pass (image and registry management).
+
+**Glossary**
+| Term | Definition |
+|------|------------|
+| Containerfile | Instruction file to build an image (= Dockerfile) |
+| Build context | Folder sent to the build engine |
+| .containerignore | File listing what to exclude from context |
+| Multi-stage build | Technique using multiple FROM to reduce final size |
+| ENTRYPOINT vs CMD | ENTRYPOINT = fixed command; CMD = default arguments |
+
+📖 **Official docs**:
+- [podman-build(1)](https://docs.podman.io/en/latest/markdown/podman-build.1.html)
+- [Containerfile reference](https://docs.podman.io/en/latest/markdown/podman-build.1.html#containerfile)
 
 ## Objective
 
@@ -197,6 +241,16 @@ podman image history monimage:base
 ```bash
 ./run-labs.sh --learn --lab 05
 ```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `Error: COPY failed: file not found` | Incorrect relative path in COPY | Check the path relative to build context |
+| Very slow build | Build context too large | Add a `.containerignore` (exclude .git, logs, etc.) |
+| `Error: image not known` after build | Tag misspelled | Check `-t monimage:base` (no spaces in the tag) |
+| `Error: address already in use` | Port 8090 already taken | `ss -tlnp \| grep 8090` then free the port |
+| Image doesn't contain changes | Build cache used | Add `--no-cache` to `podman build` |
 
 {% endtab %}
 {% endtabs %}
