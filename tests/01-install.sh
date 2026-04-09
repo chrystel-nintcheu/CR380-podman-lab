@@ -12,6 +12,10 @@
 #     It does not need root to run containers (rootless mode).
 #
 # Depends on: 00
+#
+# 📖 Installation guide: https://docs.podman.io/en/latest/installation.html
+# 📖 podman(1): https://docs.podman.io/en/latest/markdown/podman.1.html
+# 📖 podman-compose: https://github.com/containers/podman-compose
 # =============================================================================
 
 run_test() {
@@ -35,6 +39,8 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 2: Update APT package list
     # FR: Mettre à jour la liste des paquets APT
+    # 📖 https://docs.podman.io/en/latest/installation.html#ubuntu
+    # ⚠  Pitfall: Stale APT cache can install older Podman versions
     # -------------------------------------------------------------------------
     learn_pause \
         "Avant d'installer Podman, nous mettons à jour la liste des paquets.\nCommande: sudo apt-get update" \
@@ -48,6 +54,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 3: Install Podman
     # FR: Installer Podman
+    # 📖 https://docs.podman.io/en/latest/installation.html#ubuntu
+    # ⚠  Pitfall: Ubuntu 22.04 ships Podman 3.x; 24.04 ships 4.x+ with
+    #    different features (e.g., podman machine, quadlet support)
     # -------------------------------------------------------------------------
     learn_pause \
         "Installation de Podman.\nSur Ubuntu, Podman est disponible dans les dépôts officiels.\nCommande: sudo apt-get install -y podman" \
@@ -81,6 +90,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 5: Install podman-compose
     # FR: Installer podman-compose pour les labs Compose
+    # 📖 https://github.com/containers/podman-compose#installation
+    # ⚠  Pitfall: pip3 install puts binary in ~/.local/bin which may not
+    #    be in PATH. Verify with: echo $PATH | tr ':' '\n' | grep local
     # -------------------------------------------------------------------------
     learn_pause \
         "Nous installons aussi podman-compose pour les labs Podman Compose.\nCommande: sudo apt-get install -y podman-compose\n\nSi indisponible dans APT, on utilisera pip3:\n  sudo apt-get install -y python3-pip\n  pip3 install podman-compose" \
@@ -95,6 +107,10 @@ run_test() {
             sudo apt-get install -y python3-pip || true
         run_cmd "Install podman-compose via pip3" "${TIMEOUT_APT}" \
             pip3 install podman-compose || true
+        # Ensure ~/.local/bin is in PATH (pip3 installs there)
+        if [[ -d "${HOME}/.local/bin" ]] && ! echo "${PATH}" | grep -q "${HOME}/.local/bin"; then
+            export PATH="${HOME}/.local/bin:${PATH}"
+        fi
     fi
 
     if command -v podman-compose &>/dev/null; then
