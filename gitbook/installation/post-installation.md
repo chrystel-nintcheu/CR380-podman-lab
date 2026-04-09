@@ -9,6 +9,23 @@ description: >-
 {% tabs %}
 {% tab title="Français" %}
 
+## Avant de commencer
+
+**Prérequis** : Lab 01 doit être validé (Podman installé via APT).
+
+**Glossaire**
+| Terme | Définition |
+|-------|------------|
+| Rootless | Exécution de conteneurs sans privilèges root |
+| Daemon | Processus serveur permanent (Docker en a un, Podman non) |
+| Registre | Serveur d'images de conteneurs (docker.io, quay.io) |
+| User namespace | Isolation des UIDs entre l'hôte et le conteneur |
+
+📖 **Documentation officielle** :
+- [podman-info(1)](https://docs.podman.io/en/latest/markdown/podman-info.1.html)
+- [podman-run(1)](https://docs.podman.io/en/latest/markdown/podman-run.1.html)
+- [Mode rootless](https://docs.podman.io/en/latest/markdown/podman.1.html#rootless-mode)
+
 ## Objectif
 
 Vérifier que Podman fonctionne correctement et comprendre la configuration par défaut (mode rootless).
@@ -71,8 +88,35 @@ podman run --rm quay.io/podman/hello  # Test fonctionnel
 ./run-labs.sh --learn --lab 02
 ```
 
+## Dépannage
+
+| Symptôme | Cause | Solution |
+|----------|-------|----------|
+| `ERRO[0000] cannot find mappings for user` | subuid/subgid non configuré | `sudo usermod --add-subuids 100000-165535 $USER` |
+| `podman run` timeout sur quay.io | Réseau lent ou registre bloqué | Essayez `podman run docker.io/alpine echo hello` |
+| `rootless: false` dans podman info | Podman exécuté avec sudo | Relancez sans sudo : `podman info` |
+| `registries.conf not found` | Config par défaut utilisée | Normal — Podman utilise docker.io et quay.io par défaut |
+| `WARN: image platform does not match` | Architecture différente | Spécifiez `--arch amd64` si sur ARM |
+
 {% endtab %}
 {% tab title="English" %}
+
+## Before You Start
+
+**Prerequisites**: Lab 01 must pass (Podman installed via APT).
+
+**Glossary**
+| Term | Definition |
+|------|------------|
+| Rootless | Running containers without root privileges |
+| Daemon | Persistent server process (Docker has one, Podman doesn't) |
+| Registry | Container image server (docker.io, quay.io) |
+| User namespace | UID isolation between host and container |
+
+📖 **Official docs**:
+- [podman-info(1)](https://docs.podman.io/en/latest/markdown/podman-info.1.html)
+- [podman-run(1)](https://docs.podman.io/en/latest/markdown/podman-run.1.html)
+- [Rootless mode](https://docs.podman.io/en/latest/markdown/podman.1.html#rootless-mode)
 
 ## Objective
 
@@ -135,6 +179,16 @@ podman run --rm quay.io/podman/hello  # Functional test
 ```bash
 ./run-labs.sh --learn --lab 02
 ```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `ERRO[0000] cannot find mappings for user` | subuid/subgid not configured | `sudo usermod --add-subuids 100000-165535 $USER` |
+| `podman run` timeout on quay.io | Slow network or blocked registry | Try `podman run docker.io/alpine echo hello` |
+| `rootless: false` in podman info | Podman run with sudo | Re-run without sudo: `podman info` |
+| `registries.conf not found` | Default config used | Normal — Podman uses docker.io and quay.io by default |
+| `WARN: image platform does not match` | Architecture mismatch | Specify `--arch amd64` if on ARM |
 
 {% endtab %}
 {% endtabs %}

@@ -14,6 +14,11 @@
 #     registry configuration.
 #
 # Depends on: 01
+#
+# 📖 podman-version(1): https://docs.podman.io/en/latest/markdown/podman-version.1.html
+# 📖 podman-info(1): https://docs.podman.io/en/latest/markdown/podman-info.1.html
+# 📖 podman-run(1): https://docs.podman.io/en/latest/markdown/podman-run.1.html
+# 📖 Rootless mode: https://docs.podman.io/en/latest/markdown/podman.1.html#rootless-mode
 # =============================================================================
 
 run_test() {
@@ -38,6 +43,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 2: Check podman version
     # FR: Vérifier la version de Podman
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-version.1.html
+    # ⚠  Pitfall: 'podman version' (no --) shows client+server info;
+    #    'podman --version' shows just the version string
     # -------------------------------------------------------------------------
     learn_pause \
         "Podman est différent de Docker: il n'a pas de démon (daemon) central.\nChaque commande 'podman' est un processus indépendant.\n\nCommande: podman version" \
@@ -52,6 +60,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 3: Check podman info
     # FR: Vérifier les informations système de Podman
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-info.1.html
+    # ⚠  Pitfall: 'podman info' output changes between versions; use
+    #    --format for reliable field extraction
     # -------------------------------------------------------------------------
     learn_pause \
         "'podman info' affiche les détails de la configuration Podman.\nNotez la ligne 'rootless: true' — Podman tourne sans root !\n\nCommande: podman info" \
@@ -66,6 +77,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 4: Run hello-world equivalent
     # FR: Lancer le conteneur hello-world de Podman
+    # 📖 https://docs.podman.io/en/latest/markdown/podman-run.1.html
+    # ⚠  Pitfall: First 'podman run' triggers image pull which may be slow;
+    #    quay.io/podman/hello may be unavailable on restricted networks
     # -------------------------------------------------------------------------
     learn_pause \
         "Testons l'installation avec l'image hello-world de Podman.\nC'est la façon la plus simple de vérifier que tout fonctionne.\n\nCommande: podman run ${IMAGE_HELLO}" \
@@ -92,6 +106,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 5: Check registries configuration
     # FR: Vérifier la configuration des registres
+    # 📖 https://docs.podman.io/en/latest/markdown/podman.1.html#registries
+    # ⚠  Pitfall: Missing registries.conf is not an error — Podman uses
+    #    built-in defaults, but students may not find docker.io images
     # -------------------------------------------------------------------------
     learn_pause \
         "Podman utilise un fichier de configuration pour les registres.\n/etc/containers/registries.conf définit où chercher les images.\nPar défaut, Docker Hub (docker.io) et Quay.io sont configurés.\n\nCommande: podman info --format '{{.Registries}}'" \
@@ -107,6 +124,9 @@ run_test() {
     # -------------------------------------------------------------------------
     # Step 6: Verify rootless operation
     # FR: Vérifier que Podman fonctionne en mode rootless
+    # 📖 https://docs.podman.io/en/latest/markdown/podman.1.html#rootless-mode
+    # ⚠  Pitfall: Running as root still works but defeats rootless benefits;
+    #    students may accidentally use sudo for all podman commands
     # -------------------------------------------------------------------------
     learn_pause \
         "L'une des grandes différences de Podman : les conteneurs tournent\nsans les droits root, ce qui est plus sécurisé.\n\nVérifions: id (doit montrer un UID non-root)" \
