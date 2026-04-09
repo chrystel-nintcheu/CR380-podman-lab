@@ -21,3 +21,6 @@ logs/test-*.log
 # Temp files
 *.tmp
 *.bak
+
+# Prompt engineering files
+prompts/
