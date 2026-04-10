@@ -40,8 +40,8 @@ users:
     plain_text_passwd: student
 
 runcmd:
-  - echo "CR380 Podman Lab VM ready — $(date)" > /etc/cr380-ready
-  - echo "Run: git clone <repo-url> && cd CR380-podman-lab && ./run-labs.sh --learn"
+  - 'echo "CR380 Podman Lab VM ready — $(date)" > /etc/cr380-ready'
+  - 'echo "Run: git clone <repo-url> && cd CR380-podman-lab && ./run-labs.sh --learn"'
 
 final_message: |
   ===========================================
