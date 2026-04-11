@@ -1,8 +1,8 @@
 # CR380 — Podman Lab
 
-> **FR** : Suite de tests automatisés et tutoriels interactifs pour apprendre [Podman](https://podman.io/) et [Podman Compose](https://github.com/containers/podman-compose) dans le cadre du cours CR380 — *Introduction aux conteneurs* à Polytechnique Montréal.
+> **FR** : Tutoriels interactifs pour apprendre [Podman](https://podman.io/) et [Podman Compose](https://github.com/containers/podman-compose) dans le cadre du cours CR380 — *Introduction aux conteneurs* à Polytechnique Montréal.
 >
-> **EN**: Automated test suite and interactive tutorials for learning [Podman](https://podman.io/) and [Podman Compose](https://github.com/containers/podman-compose) as part of the CR380 — *Introduction to Containers* course at Polytechnique Montréal.
+> **EN**: Interactive tutorials for learning [Podman](https://podman.io/) and [Podman Compose](https://github.com/containers/podman-compose) as part of the CR380 — *Introduction to Containers* course at Polytechnique Montréal.
 
 Podman est un moteur de conteneurs **sans démon** et **rootless** compatible avec Docker. Ce dépôt contient **9 labs progressifs** (00–08) plus un nettoyage final (99).
 
